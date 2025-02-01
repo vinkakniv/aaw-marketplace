@@ -27,6 +27,11 @@ const metricsMiddleware = express_prom_bundle({
   }
 });
 
+// Middleware
+app.use(metricsMiddleware);
+app.use(cors());
+app.use(express.json());
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/order', orderRoutes);
@@ -34,11 +39,6 @@ app.use('/api/cart', cartRoutes);
 app.use("/api/product", productRoutes);
 app.use("/api/tenant", tenantRoutes);
 app.use('/api/wishlist', wishlistRoutes);
-
-// Middleware
-app.use(metricsMiddleware);
-app.use(cors());
-app.use(express.json());
 
 // Health check endpoint
 app.get('/health', (_, res) => {
