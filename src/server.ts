@@ -3,6 +3,9 @@ dotenv.config();
 
 import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
+
+import authRoutes from "./auth/user.routes"
+
 import express_prom_bundle from "express-prom-bundle";
 
 const app: Express = express();
@@ -18,6 +21,8 @@ const metricsMiddleware = express_prom_bundle({
     collectDefaultMetrics: {}
   }
 });
+
+app.use('/api/auth', authRoutes);
 
 // Middleware
 app.use(metricsMiddleware);
