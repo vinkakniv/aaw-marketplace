@@ -5,6 +5,11 @@ import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
 
 import authRoutes from "./auth/user.routes"
+import orderRoutes from "./orders/order/order.routes";
+import cartRoutes from "./orders/cart/cart.routes";
+import productRoutes from './product/product.routes'
+import tenantRoutes from './tenant/tenant.routes';
+import wishlistRoutes from "./wishlist/wishlist.routes";
 
 import express_prom_bundle from "express-prom-bundle";
 
@@ -22,7 +27,13 @@ const metricsMiddleware = express_prom_bundle({
   }
 });
 
+// Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/order', orderRoutes);
+app.use('/api/cart', cartRoutes);
+app.use("/api/product", productRoutes);
+app.use("/api/tenant", tenantRoutes);
+app.use('/api/wishlist', wishlistRoutes);
 
 // Middleware
 app.use(metricsMiddleware);
