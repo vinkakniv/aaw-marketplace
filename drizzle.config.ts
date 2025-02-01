@@ -1,9 +1,6 @@
 import 'dotenv/config';
 import type { Config } from 'drizzle-kit';
 
-console.log('Using database:', process.env.DB_NAME); // Debug log
-
-
 export default {
   schema: './src/db/schema/**/*.ts',
   out: './drizzle',
