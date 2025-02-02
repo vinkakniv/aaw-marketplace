@@ -3,6 +3,8 @@ import * as schema from '@db/schema/auth/users'
 import { db } from "@src/db";
 
 export const insertNewUser = async (data: NewUser) => {
+    console.log("insertNewUser data"   ,data)
+    console.log("insertNewUser db"   ,db)
     const result = await db
         .insert(schema.users)
         .values(data)
@@ -14,5 +16,6 @@ export const insertNewUser = async (data: NewUser) => {
             address: schema.users.address,
             phone_number: schema.users.phone_number
         })
+    console.log("insertNewUser result",result)
     return result;
 }

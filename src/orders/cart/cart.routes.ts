@@ -1,7 +1,14 @@
 import express from 'express';
+import { validate } from "@src/shared/middleware/validate";
+import * as Validation from './validation';
+import * as Handler from './cart.handler';
+import { verifyJWT } from "@src/shared/middleware/verifyJWT";
 
 const router = express.Router();
 
-// TODO: Add Routes
+router.get('', verifyJWT, Handler.getAllCartItemsHandler);
+router.post('', verifyJWT, validate(Validation.addItemToCartSchema), Handler.addItemToCartHandler);
+router.put('', verifyJWT, validate(Validation.editCartItemSchema), Handler.editCartItemHandler);
+router.delete('', verifyJWT, validate(Validation.deleteCartItemSchema), Handler.deleteCartItemHandler);
 
 export default router;

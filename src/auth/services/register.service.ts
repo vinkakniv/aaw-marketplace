@@ -28,7 +28,7 @@ export const registerService = async (
             address,
             phone_number
         }
-
+        console.log("userData===>",userData)
         const newUser = await insertNewUser(userData)
 
         return {
