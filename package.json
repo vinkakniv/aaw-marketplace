@@ -1,7 +1,7 @@
 {
-  "name": "marketplace-monolith",
+  "name": "marketplace",
   "version": "1.0.0",
-  "description": "Monolithic version of the marketplace application",
+  "description": "marketplace",
   "main": "src/server.ts",
   "scripts": {
     "start": "node dist/server.js",
