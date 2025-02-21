@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { UnauthenticatedResponse } from "../commons/patterns/exceptions";
-//import { verifyAdminTokenService } from "@src/auth/services";
-import { getTenantService } from "@src/tenant/services";
 import axios from "axios";
 
 const AUTH_SERVICE_URL = "http://localhost:8000/api/auth"
@@ -23,16 +21,11 @@ export const verifyJWTTenant = async (
       return res.status(401).send({ message: "Invalid token" });
     }
 
-    //const payload = await axios.post(`http://localhost:8000/api/auth/verify-admin-token`, { token });
     const payload = await axios.post(`${AUTH_SERVICE_URL}/verify-admin-token`, { token });
 
-
-   // const payload = await verifyAdminTokenService(token);
     if (payload.status !== 200) {
       return res.status(401).send({ message: "Invalid token" });
     }
-
-    
 
     const verifiedPayload = payload as {
       status: 200;

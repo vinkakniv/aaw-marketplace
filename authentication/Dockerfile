@@ -1,6 +1,6 @@
 FROM node:18.18.2 AS builder
 
-WORKDIR /marketplace
+WORKDIR /authentication
 
 COPY package.json ./
 
@@ -10,8 +10,12 @@ RUN npm install -g pnpm typescript
 # Install dependencies
 RUN pnpm install
 
-# Copy source
+RUN pnpm add -D ts-node
+
 COPY . .
+
+RUN pnpm run generate
+RUN pnpm run migrate
 
 # Build
 RUN pnpm run build
@@ -22,13 +26,17 @@ FROM node:18.18.2-slim
 ENV PORT 8000
 ENV NODE_ENV production
 
-WORKDIR /marketplace
+WORKDIR /authentication
 
-COPY --from=builder /marketplace/dist ./dist
-COPY --from=builder /marketplace/package.json ./package.json
+COPY --from=builder /authentication/dist ./dist
+COPY --from=builder /authentication/package.json ./package.json
+COPY --from=builder /authentication/src ./src 
+COPY --from=builder /authentication/drizzle.config.ts ./drizzle.config.ts  
+COPY --from=builder /wauthentication/drizzle ./drizzle 
 
 RUN npm install --only=production
+RUN npm install -g pnpm typescript tsx
 
 EXPOSE 8000
 
-CMD ["node", "dist/src/server.js"]
+CMD pnpm run migrate && node dist/src/server.js

@@ -1,31 +1,31 @@
 version: '3.8'
 
 services:
-  marketplace:
+  marketplace-auth:
     build: .
     ports:
       - "8000:8000"
     environment:
       - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
       - JWT_SECRET=auth_ms_jwt_secret
-      - DB_HOST=db
+      - DB_HOST=db-auth
       - DB_PORT=5432
       - DB_USER=postgres
       - DB_PASSWORD=postgres
-      - DB_NAME=marketplace
+      - DB_NAME=marketplace_auth
     depends_on:
-      - db
+      - db-auth
 
-  db:
+  db-auth:
     image: postgres:latest
     environment:
-      POSTGRES_DB: marketplace
+      POSTGRES_DB: marketplace_auth
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_auth_data:/var/lib/postgresql/data
 
 volumes:
-  postgres_data:
+  postgres_auth_data:

@@ -51,8 +51,8 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=postgres
-DB_NAME=postgres
-PORT=8000
+DB_NAME=products_db
+PORT=8002
 NODE_ENV=development
 
 ```
@@ -69,7 +69,7 @@ pnpm migrate # Run DB migrations
 
 ## API Endpoints
 
-Base URL: http://localhost:8000
+Base URL: http://localhost:8002
 
 ## Core endpoints
 

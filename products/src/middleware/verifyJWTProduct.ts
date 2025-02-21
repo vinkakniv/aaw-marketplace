@@ -1,13 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
 import { UnauthenticatedResponse } from "../commons/patterns/exceptions";
-// import { verifyAdminTokenService } from "@src/auth/services";
-// import { getTenantService } from "@src/tenant/services";
 import axios from "axios";
 
 const AUTH_SERVICE_URL = "http://localhost:8000/api/auth"
 const TENANT_SERVICE_URL = "http://localhost:8003/api/tenant"
-
 
 export const verifyJWTProduct = async (
   req: Request,
@@ -20,9 +16,10 @@ export const verifyJWTProduct = async (
       return res.status(401).send({ message: "Invalid token" });
     }
 
+
     const payload = await axios.post(`${AUTH_SERVICE_URL}/verify-admin-token`, { token });
 
-    //const payload = await verifyAdminTokenService(token);
+    console.log(payload.status)
     if (payload.status !== 200) {
       return res.status(401).send({ message: "Invalid token" });
     }
@@ -46,9 +43,15 @@ export const verifyJWTProduct = async (
       return res.status(500).send({ message: "Server Tenant ID not found" });
     }
 
-    const { data: tenantPayload } = await axios.get(`${TENANT_SERVICE_URL}/${SERVER_TENANT_ID}`);
+    
 
-    //const tenantPayload = await getTenantService(SERVER_TENANT_ID);
+    const tenantPayload = await axios.get(`${TENANT_SERVICE_URL}/${SERVER_TENANT_ID}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    console.log(tenantPayload.data)
 
     if (
       tenantPayload.status !== 200 ||
@@ -71,6 +74,9 @@ export const verifyJWTProduct = async (
         };
       };
     };
+
+    console.log(verifiedPayload.data.user.id)
+    console.log(verifiedTenantPayload.data.tenants.owner_id)
 
     // Check for tenant ownership
     if (verifiedPayload.data.user.id !== verifiedTenantPayload.data.tenants.owner_id) {
