@@ -28,6 +28,10 @@ COPY --from=builder /orders/dist ./dist
 COPY --from=builder /orders/package.json ./package.json
 COPY --from=builder /orders/entrypoint.sh ./entrypoint.sh
 
+
+COPY --from=builder /orders/drizzle.config.ts ./drizzle.config.ts  
+COPY --from=builder /orders/drizzle ./drizzle
+
 RUN npm install --only=production
 
 EXPOSE 8000
