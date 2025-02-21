@@ -28,6 +28,10 @@ COPY --from=builder /authentication/dist ./dist
 COPY --from=builder /authentication/package.json ./package.json
 COPY --from=builder /authentication/entrypoint.sh ./entrypoint.sh
 
+
+COPY --from=builder /authentication/drizzle.config.ts ./drizzle.config.ts  
+COPY --from=builder /authentication/drizzle ./drizzle
+
 RUN npm install --only=production
 
 EXPOSE 8000
