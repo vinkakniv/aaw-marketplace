@@ -19,16 +19,18 @@ RUN pnpm run build
 # Production image
 FROM node:18.18.2-slim
 
-ENV PORT 8003
+ENV PORT 8000
 ENV NODE_ENV production
 
 WORKDIR /tenant
 
 COPY --from=builder /tenant/dist ./dist
 COPY --from=builder /tenant/package.json ./package.json
+COPY --from=builder /tenant/entrypoint.sh ./entrypoint.sh
 
 RUN npm install --only=production
 
-EXPOSE 8003
+EXPOSE 8000
 
-CMD ["node", "dist/src/server.js"]
+RUN ["chmod", "+x", "entrypoint.sh"]
+ENTRYPOINT [ "./entrypoint.sh" ]

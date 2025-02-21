@@ -67,7 +67,7 @@ importers:
         specifier: ^9.0.8
         version: 9.0.8
       drizzle-kit:
-        specifier: ^0.20.14
+        specifier: ^0.20.18
         version: 0.20.18
       nodemon:
         specifier: ^3.1.0

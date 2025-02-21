@@ -35,7 +35,7 @@
     "@types/node": "^20.11.24",
     "@types/pg": "^8.11.2",
     "@types/uuid": "^9.0.8",
-    "drizzle-kit": "^0.20.14",
+    "drizzle-kit": "^0.20.18",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.8",
