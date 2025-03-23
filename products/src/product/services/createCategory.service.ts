@@ -15,7 +15,7 @@ export const createCategoryService = async (
             tenant_id: SERVER_TENANT_ID,
             name,
         }
-
+        
         const newCategory = await createNewCategory(categoryData);
 
         return {

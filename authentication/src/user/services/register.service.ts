@@ -18,7 +18,7 @@ export const registerService = async (
         if (!process.env.TENANT_ID) {
             return new InternalServerErrorResponse("Server tenant ID is missing").generate();
         }
-
+    
         const userData: NewUser = {
             tenant_id: process.env.TENANT_ID,
             username,
@@ -28,9 +28,9 @@ export const registerService = async (
             address,
             phone_number
         }
-        console.log("userData===>",userData)
+    
         const newUser = await insertNewUser(userData)
-
+    
         return {
             data: newUser,
             status: 201

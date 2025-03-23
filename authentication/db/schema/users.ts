@@ -9,11 +9,14 @@ export const users = pgTable('users', {
     full_name: varchar('full_name', { length: 256 }),
     address: text('address'),
     phone_number: varchar('phone_number', { length: 256 }),
+
     created_at: timestamp('created_at', { withTimezone: true }).defaultNow(),
     updated_at: timestamp('updated_at', { withTimezone: true }).defaultNow(),
-}, (table) => ({
-    pk: primaryKey({ columns: [table.tenant_id, table.username, table.email] })
-}));
+}, (table) => {
+    return {
+        pk: primaryKey({ columns: [table.tenant_id, table.username, table.email] }),
+    }
+})
 
-export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
+export type User = typeof users.$inferSelect; // Return type when queried
+export type NewUser = typeof users.$inferInsert; // Insert type

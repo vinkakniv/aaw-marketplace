@@ -12,10 +12,9 @@
     "paths": {
       "@src/*": ["./src/*"],
       "@db/*": ["./db/*"],
-      "@type/*": ["./type/*"]
+      "@type/*": ["./type/*"],
     }
   },
-  "include": ["src"],
   "ts-node": {
     "require": ["tsconfig-paths/register"]
   }

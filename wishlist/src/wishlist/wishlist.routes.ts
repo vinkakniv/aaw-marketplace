@@ -1,7 +1,8 @@
 import express from "express";
-import { validate, verifyJWT } from "@src/middleware";
+import { validate } from "@src/middleware/validate";
 import * as Validation from './validation';
 import * as Handler from './wishlist.handler';
+import { verifyJWT } from "@src/middleware/verifyJWT";
 
 const router = express.Router();
 

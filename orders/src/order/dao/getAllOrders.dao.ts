@@ -7,11 +7,11 @@ export const getAllOrders = async (
     user_id: string,
 ) => {
     const result = await db
-        .select()
-        .from(schema.order)
-        .where(and(
-            eq(schema.order.tenant_id, tenant_id),
-            eq(schema.order.user_id, user_id),
-        ))
+                    .select()
+                    .from(schema.order)
+                    .where(and(
+                        eq(schema.order.tenant_id, tenant_id),
+                        eq(schema.order.user_id, user_id),
+                    ))
     return result;
 }

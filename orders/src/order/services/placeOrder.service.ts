@@ -2,9 +2,8 @@ import { getAllCartItems } from "@src/cart/dao/getAllCartItems.dao";
 import { BadRequestResponse, InternalServerErrorResponse, NotFoundResponse } from "@src/commons/patterns";
 import { createOrder } from "../dao/createOrder.dao";
 import axios, { AxiosResponse } from "axios";
-import { User, Product } from "../../../types";
-
-const PRODUCT_SERVICE_URL = "http://localhost:8002/api/product"
+import { Product } from "@type/product";
+import { User } from "@type/user";
 
 export const placeOrderService = async (
     user: User,
@@ -32,7 +31,7 @@ export const placeOrderService = async (
         if (productIds.length === 0) {
             return new BadRequestResponse('Cart is empty').generate();
         }
-        const products: AxiosResponse<Product[], any> = await axios.post(`${PRODUCT_SERVICE_URL}/product/many`, { productIds });
+        const products: AxiosResponse<Product[], any> = await axios.post(`${process.env.PRODUCT_MS_URL}/product/many`, { productIds });
         if (products.status !== 200) {
             return new InternalServerErrorResponse("Failed to get products").generate();
         }

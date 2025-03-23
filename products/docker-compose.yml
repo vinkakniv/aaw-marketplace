@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # Node.js application service
+  microservice:
+    build: .
+    environment:
+      - TENANT_ID=47dd6b24-0b23-46b0-a662-776158d089ba
+      - AUTH_MS_URL=http://host.docker.internal:8000
+      - TENANT_MS_URL=http://host.docker.internal:8003
+      - DB_HOST=product-db
+      - DB_PORT=5432
+    ports:
+      - "8002:8002"
+    depends_on:
+      - product-db
+
+  # PostgreSQL database service
+  product-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: product-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5430:5432"
+    volumes:
+      - product_pgdata:/var/lib/postgresql/data
+
+volumes:
+  product_pgdata:

@@ -1,3 +1,4 @@
+import { NewTenant } from "@db/schema/tenants"
 import { InternalServerErrorResponse } from "@src/commons/patterns"
 import { createNewTenant } from "../dao/createNewTenant.dao";
 

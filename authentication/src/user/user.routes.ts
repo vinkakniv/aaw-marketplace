@@ -1,5 +1,5 @@
 import express from "express";
-import { validate } from "@src/middleware";
+import { validate } from "@src/middleware/validate";
 import * as Validation from "./validation";
 import * as Handler from "./user.handler";
 

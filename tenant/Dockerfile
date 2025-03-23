@@ -1,36 +1,43 @@
+# Stage 1: Fetching the node image and building the application
 FROM node:18.18.2 AS builder
 
-WORKDIR /tenant
+# Setting up the work directory
+WORKDIR /service-tenant
 
+# Copying package.json separately
 COPY package.json ./
 
 # Install pnpm
 RUN npm install -g pnpm typescript
 
-# Install dependencies
+# Installing dependencies
 RUN pnpm install
 
-# Copy source
+# Copying the rest of the application
 COPY . .
 
-# Build
+# Building our application
 RUN pnpm run build
 
-# Production image
+# Stage 2: Creating a lightweight image for production
 FROM node:18.18.2-slim
 
-ENV PORT 8000
+# Declaring env
+ENV PORT 8003
 ENV NODE_ENV production
 
-WORKDIR /tenant
+# Set working directory
+WORKDIR /service-tenant
 
-COPY --from=builder /tenant/dist ./dist
-COPY --from=builder /tenant/package.json ./package.json
-COPY --from=builder /tenant/entrypoint.sh ./entrypoint.sh
+# Copy built files from the previous stage
+COPY --from=builder /service-tenant/dist ./dist
+COPY --from=builder /service-tenant/package.json ./package.json
 
+# Install production dependencies only
 RUN npm install --only=production
 
-EXPOSE 8000
+# Expose server port
+EXPOSE 8003
 
-RUN ["chmod", "+x", "entrypoint.sh"]
-ENTRYPOINT [ "./entrypoint.sh" ]
+# Start the application
+CMD ["node", "dist/src/server.js"]

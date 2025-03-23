@@ -1,5 +1,6 @@
 import { InternalServerErrorResponse, NotFoundResponse } from "@src/commons/patterns";
-import { User } from "../../../types";
+import { deleteCartItem } from "../dao/deleteCartItem.dao";
+import { User } from "@type/user";
 import { deleteCartItemByProductId } from "../dao/deleteCartItemByProductId.dao";
 
 export const deleteCartItemService = async (

@@ -1,7 +1,7 @@
 import { InternalServerErrorResponse, NotFoundResponse, UnauthorizedResponse } from "@src/commons/patterns"
 import { editTenantById } from "../dao/editTenantById.dao"
 import { getTenantById } from "../dao/getTenantById.dao"
-import { User } from "../../../types/user";
+import { User } from "@type/user";
 
 export const editTenantService = async (
     old_tenant_id: string,

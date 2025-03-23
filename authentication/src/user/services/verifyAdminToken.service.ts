@@ -6,7 +6,6 @@ export const verifyAdminTokenService = async (
     token: string
 ) => {
     try {
-
         const payload = jwt.verify(
             token,
             process.env.ADMIN_JWT_SECRET as string

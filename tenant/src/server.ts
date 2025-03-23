@@ -1,61 +1,31 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-import express, { Express, NextFunction, Request, Response } from "express";
+import express from "express";
 import cors from "cors";
+import express_prom_bundle from "express-prom-bundle";
 
 import tenantRoutes from './tenant/tenant.routes';
 
-import express_prom_bundle from "express-prom-bundle";
-
-const app: Express = express();
-
-// Prometheus metrics middleware
 const metricsMiddleware = express_prom_bundle({
   includeMethod: true,
   includePath: true,
   includeStatusCode: true,
-  includeUp: true,
-  customLabels: { project_name: 'marketplace-microservices' },
-  promClient: {
-    collectDefaultMetrics: {}
-  }
-});
+  includeUp: true
+})
 
-// Middleware
+const app = express();
 app.use(metricsMiddleware);
 app.use(cors());
 app.use(express.json());
 
-// Routes
 app.use("/api/tenant", tenantRoutes);
 
-
-// Health check endpoint
-app.get('/health', (_, res) => {
-  res.status(200).json({ status: 'healthy' });
-});
-
-// Root endpoint
-app.get('/', (_, res) => {
-  res.status(200).json({
-    message: 'Marketplace-tenant API',
-    version: '1.0.0'
-  });
-});
-
-app.use((req: Request, res: Response) => {
-  res.status(404).json({
-    message: 'Not Found',
-    path: req.path
-  });
+app.get("/", (req, res) => {
+  return res.status(200).send("Tenant Microservice is running!");
 });
 
 const PORT = process.env.PORT || 8003;
-
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
+  console.log(`🚀 Tenant Microservice has started on port ${PORT}`);
 });
-
-export default app;

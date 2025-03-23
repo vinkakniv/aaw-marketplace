@@ -1,6 +1,0 @@
-include:
-  - ./authentication/docker-compose.yaml 
-  - ./orders/docker-compose.yaml 
-  - ./products/docker-compose.yaml 
-  - ./tenant/docker-compose.yaml
-  - ./wishlist/docker-compose.yaml 

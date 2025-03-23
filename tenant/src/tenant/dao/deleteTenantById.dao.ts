@@ -1,5 +1,5 @@
-import * as schemaTenant from '@db/schema/tenants'
-import * as schemaTenantDetails from '@db/schema/tenantDetails'
+import * as schemaTenants from "@db/schema/tenants"
+import * as schemaTenantDetails from "@db/schema/tenantDetails"
 import { db } from "@src/db"
 import { eq } from "drizzle-orm"
 
@@ -10,8 +10,8 @@ export const deleteTenantById = async (tenant_id: string) => {
                                         .where(eq(schemaTenantDetails.tenantDetails.tenant_id, tenant_id))
                                         .returning();
         const resultTenants = await tx
-                                .delete(schemaTenant.tenants)
-                                .where(eq(schemaTenant.tenants.id, tenant_id))
+                                .delete(schemaTenants.tenants)
+                                .where(eq(schemaTenants.tenants.id, tenant_id))
                                 .returning();
                                         
         if (!resultTenants[0] || !resultTenantDetails[0]) {

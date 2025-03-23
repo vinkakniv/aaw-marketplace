@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Node.js application service
+  microservice:
+    build: .
+    environment:
+      - AUTH_MS_URL=http://host.docker.internal:7999
+      - DB_HOST=tenant-db
+      - DB_PORT=5432
+    ports:
+      - "8003:8003"
+    depends_on:
+      - tenant-db
+
+  # PostgreSQL database service
+  tenant-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: tenant-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5431:5432"
+    volumes:
+      - tenant_pgdata:/var/lib/postgresql/data
+
+volumes:
+  tenant_pgdata:

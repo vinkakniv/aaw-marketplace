@@ -6,7 +6,7 @@ import * as schemaOrder from "@db/schema/order";
 import * as schemaOrderDetail from "@db/schema/orderDetail";
 import { Cart } from "@db/schema/cart";
 import { and, eq } from "drizzle-orm";
-import { Product } from "../../../types";
+import { Product } from "@type/product";
 
 export const createOrder = async (
     tenant_id: string,
@@ -36,12 +36,12 @@ export const createOrder = async (
         }
 
         const order: Order[] = await trx
-            .insert(schemaOrder.order)
-            .values(orderData)
-            .returning()
-
+                        .insert(schemaOrder.order)
+                        .values(orderData)
+                        .returning()
+        
         const orderDict: Order = order[0];
-
+        
         // create order details
         const orderDetailsData: NewOrderDetail[] = cart_items.map((item) => {
             const product = products_data.find((product) => product.id === item.product_id);
@@ -60,10 +60,10 @@ export const createOrder = async (
         });
 
         const orderDetails: OrderDetail[] = await trx
-            .insert(schemaOrderDetail.orderDetail)
-            .values(orderDetailsData)
-            .returning()
-
+                                            .insert(schemaOrderDetail.orderDetail)
+                                            .values(orderDetailsData)
+                                            .returning()
+        
         // empty the cart
         await trx
             .delete(schemaCart.cart)
@@ -71,7 +71,7 @@ export const createOrder = async (
                 eq(schemaCart.cart.tenant_id, tenant_id),
                 eq(schemaCart.cart.user_id, user_id),
             ))
-
+        
         return {
             order: orderDict,
             orderDetails,

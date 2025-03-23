@@ -1,7 +1,7 @@
 import { InternalServerErrorResponse } from "@src/commons/patterns";
 import { editCartDataById } from "../dao/editCartDataById.dao";
 import { deleteCartItem } from "../dao/deleteCartItem.dao";
-import { User } from "../../../types";
+import { User } from "@type/user";
 
 export const editCartItemService = async (
     user: User,
