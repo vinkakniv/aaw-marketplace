@@ -1,0 +1,426 @@
+swagger: '2.0'
+info:
+  title: Orders API
+  version: 1.0.0
+  description: API documentation for the Orders microservice
+host: localhost
+basePath: /api/orders
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  BearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: JWT Token untuk autentikasi (Bearer token)
+
+paths:
+  /cart:
+    get:
+      tags:
+        - Cart
+      summary: Get all cart items
+      description: Retrieve all items in the user's cart
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/CartItem'
+        '401':
+          $ref: '#/definitions/UnauthorizedError'
+        '500':
+          $ref: '#/definitions/InternalServerError'
+    post:
+      tags:
+        - Cart
+      summary: Add item to cart
+      description: Add a new product to the shopping cart
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/AddItemRequest'
+      responses:
+        '201':
+          description: Item added successfully
+          schema:
+            $ref: '#/definitions/CartItem'
+        '400':
+          $ref: '#/definitions/BadRequestError'
+        '401':
+          $ref: '#/definitions/UnauthorizedError'
+        '500':
+          $ref: '#/definitions/InternalServerError'
+    put:
+      tags:
+        - Cart
+      summary: Update cart item
+      description: Update quantity of an existing cart item
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/EditItemRequest'
+      responses:
+        '200':
+          description: Cart item updated
+          schema:
+            $ref: '#/definitions/CartItem'
+        '400':
+          $ref: '#/definitions/BadRequestError'
+        '401':
+          $ref: '#/definitions/UnauthorizedError'
+        '404':
+          $ref: '#/definitions/NotFoundError'
+        '500':
+          $ref: '#/definitions/InternalServerError'
+    delete:
+      tags:
+        - Cart
+      summary: Remove item from cart
+      description: Remove a product from the shopping cart
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/DeleteItemRequest'
+      responses:
+        '204':
+          description: Item removed successfully
+        '400':
+          $ref: '#/definitions/BadRequestError'
+        '401':
+          $ref: '#/definitions/UnauthorizedError'
+        '404':
+          $ref: '#/definitions/NotFoundError'
+        '500':
+          $ref: '#/definitions/InternalServerError'
+
+  /:
+    get:
+      tags:
+        - Order
+      summary: Get semua order user
+      description: Mendapatkan semua order untuk user yang sedang login
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Daftar order berhasil didapatkan
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Order'
+        '401':
+          $ref: '#/definitions/UnauthorizedError'
+        '500':
+          $ref: '#/definitions/InternalServerError'
+    post:
+      tags:
+        - Order
+      summary: Buat order baru
+      description: Membuat order baru dari keranjang belanja
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/PlaceOrderRequest'
+      responses:
+        '201':
+          description: Order berhasil dibuat
+          schema:
+            $ref: '#/definitions/Order'
+        '400':
+          $ref: '#/definitions/BadRequestError'
+        '401':
+          $ref: '#/definitions/UnauthorizedError'
+        '500':
+          $ref: '#/definitions/InternalServerError'
+
+  /{orderId}:
+    get:
+      tags:
+        - Order
+      summary: Dapatkan detail order
+      description: Mendapatkan detail order berdasarkan ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Detail order berhasil didapatkan
+          schema:
+            $ref: '#/definitions/OrderDetail'
+        '401':
+          $ref: '#/definitions/UnauthorizedError'
+        '404':
+          $ref: '#/definitions/NotFoundError'
+        '500':
+          $ref: '#/definitions/InternalServerError'
+
+  /{orderId}/pay:
+    post:
+      tags:
+        - Order
+      summary: Bayar order
+      description: Proses pembayaran untuk order yang sudah dibuat
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          type: string
+          format: uuid
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/PaymentRequest'
+      responses:
+        '200':
+          description: Pembayaran berhasil diproses
+          schema:
+            $ref: '#/definitions/Payment'
+        '400':
+          $ref: '#/definitions/BadRequestError'
+        '404':
+          $ref: '#/definitions/NotFoundError'
+        '500':
+          $ref: '#/definitions/InternalServerError'
+
+  /{orderId}/cancel:
+    post:
+      tags:
+        - Order
+      summary: Batalkan order
+      description: Membatalkan order yang sudah dibuat
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Order berhasil dibatalkan
+          schema:
+            $ref: '#/definitions/Order'
+        '401':
+          $ref: '#/definitions/UnauthorizedError'
+        '404':
+          $ref: '#/definitions/NotFoundError'
+        '500':
+          $ref: '#/definitions/InternalServerError'
+
+definitions:
+  CartItem:
+    type: object
+    properties:
+      cart_id:
+        type: string
+        format: uuid
+      product_id:
+        type: string
+        format: uuid
+      quantity:
+        type: integer
+        minimum: 1
+
+  AddItemRequest:
+    type: object
+    required:
+      - product_id
+      - quantity
+    properties:
+      product_id:
+        type: string
+        format: uuid
+      quantity:
+        type: integer
+        minimum: 1
+
+  EditItemRequest:
+    type: object
+    required:
+      - cart_id
+    properties:
+      cart_id:
+        type: string
+        format: uuid
+      quantity:
+        type: integer
+        minimum: 0
+
+  DeleteItemRequest:
+    type: object
+    required:
+      - product_id
+    properties:
+      product_id:
+        type: string
+        format: uuid
+
+  Order:
+    type: object
+    properties:
+      order_id:
+        type: string
+        format: uuid
+      user_id:
+        type: string
+      shipping_provider:
+        type: string
+      status:
+        type: string
+      total_amount:
+        type: number
+      created_at:
+        type: string
+        format: date-time
+
+  OrderDetail:
+    allOf:
+      - $ref: '#/definitions/Order'
+      - type: object
+        properties:
+          items:
+            type: array
+            items:
+              $ref: '#/definitions/OrderItem'
+          payment_details:
+            $ref: '#/definitions/Payment'
+
+  OrderItem:
+    type: object
+    properties:
+      product_id:
+        type: string
+        format: uuid
+      quantity:
+        type: integer
+      price:
+        type: number
+
+  Payment:
+    type: object
+    properties:
+      payment_id:
+        type: string
+        format: uuid
+      status:
+        type: string
+      amount:
+        type: number
+      payment_method:
+        type: string
+      payment_reference:
+        type: string
+
+  PlaceOrderRequest:
+    type: object
+    required:
+      - shipping_provider
+    properties:
+      shipping_provider:
+        type: string
+        enum:
+          - JNE
+          - TIKI
+          - SICEPAT
+          - GOSEND
+          - GRAB_EXPRESS
+
+  PaymentRequest:
+    type: object
+    required:
+      - payment_method
+      - payment_reference
+      - amount
+    properties:
+      payment_method:
+        type: string
+      payment_reference:
+        type: string
+      amount:
+        type: integer
+        format: int64
+        minimum: 1
+
+  BadRequestError:
+    type: object
+    properties:
+      code:
+        type: integer
+        example: 400
+      message:
+        type: string
+        example: Bad Request
+      details:
+        type: string
+        example: Invalid request parameters
+
+  UnauthorizedError:
+    type: object
+    properties:
+      code:
+        type: integer
+        example: 401
+      message:
+        type: string
+        example: Unauthorized
+      details:
+        type: string
+        example: Missing or invalid authentication token
+
+  NotFoundError:
+    type: object
+    properties:
+      code:
+        type: integer
+        example: 404
+      message:
+        type: string
+        example: Not Found
+      details:
+        type: string
+        example: Order not found
+
+  InternalServerError:
+    type: object
+    properties:
+      code:
+        type: integer
+        example: 500
+      message:
+        type: string
+        example: Internal Server Error
+      details:
+        type: string
+        example: Unexpected server error occurred

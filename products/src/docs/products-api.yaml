@@ -1,0 +1,474 @@
+swagger: '2.0'
+info:
+  title: Products API
+  version: 1.0.0
+  description: API documentation for the Products microservice
+host: localhost
+basePath: /api/v2/products
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  JWT:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: 'JWT Token untuk autentikasi (Bearer token). Token harus valid dan user harus memiliki akses ke tenant.'
+
+paths:
+  /v2/products:
+    get:
+      tags:
+        - Products
+      summary: Mendapatkan semua produk
+      security:
+        - JWT: []
+      responses:
+        '200':
+          description: Daftar produk berhasil didapatkan
+          schema:
+            $ref: '#/definitions/V2Response'
+        '401':
+          description: Token tidak valid atau user tidak memiliki akses
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Invalid token"
+        '500':
+          $ref: '#/definitions/V2ErrorResponse'
+    post:
+      tags:
+        - Products
+      summary: Membuat produk baru
+      security:
+        - JWT: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateProductRequest'
+      responses:
+        '201':
+          description: Produk berhasil dibuat
+          schema:
+            $ref: '#/definitions/V2Response'
+        '400':
+          $ref: '#/definitions/V2ErrorResponse'
+        '401':
+          description: Token tidak valid atau user tidak memiliki akses
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Invalid token"
+        '500':
+          $ref: '#/definitions/V2ErrorResponse'
+
+  /v2/products/bulk:
+    post:
+      tags:
+        - Products
+      summary: Mendapatkan banyak produk sekaligus berdasarkan ID
+      security:
+        - JWT: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+              product_ids:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+                minItems: 1
+                description: "At least one product ID is required"
+            required:
+              - product_ids
+      responses:
+        '200':
+          description: Daftar produk yang diminta
+          schema:
+            $ref: '#/definitions/V2Response'
+        '400':
+          $ref: '#/definitions/V2ErrorResponse'
+        '500':
+          $ref: '#/definitions/V2ErrorResponse'
+
+  /v2/products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Mendapatkan produk berdasarkan ID
+      security:
+        - JWT: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Detail produk
+          schema:
+            $ref: '#/definitions/V2Response'
+        '404':
+          $ref: '#/definitions/V2ErrorResponse'
+        '500':
+          $ref: '#/definitions/V2ErrorResponse'
+    put:
+      tags:
+        - Products
+      summary: Memperbarui produk
+      security:
+        - JWT: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateProductRequest'
+      responses:
+        '200':
+          description: Produk berhasil diperbarui
+          schema:
+            $ref: '#/definitions/V2Response'
+        '400':
+          $ref: '#/definitions/V2ErrorResponse'
+        '404':
+          $ref: '#/definitions/V2ErrorResponse'
+        '500':
+          $ref: '#/definitions/V2ErrorResponse'
+    delete:
+      tags:
+        - Products
+      summary: Menghapus produk
+      security:
+        - JWT: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Produk berhasil dihapus
+          schema:
+            $ref: '#/definitions/V2Response'
+        '404':
+          $ref: '#/definitions/V2ErrorResponse'
+        '500':
+          $ref: '#/definitions/V2ErrorResponse'
+
+  /v2/products/categories/{category_id}:
+    get:
+      tags:
+        - Products
+      summary: Mendapatkan produk berdasarkan kategori
+      security:
+        - JWT: []
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Daftar produk dalam kategori
+          schema:
+            $ref: '#/definitions/V2Response'
+        '404':
+          $ref: '#/definitions/V2ErrorResponse'
+        '500':
+          $ref: '#/definitions/V2ErrorResponse'
+
+  /v2/categories:
+    get:
+      tags:
+        - Categories
+      summary: Mendapatkan semua kategori
+      security:
+        - JWT: []
+      responses:
+        '200':
+          description: Daftar kategori berhasil didapatkan
+          schema:
+            $ref: '#/definitions/V2Response'
+        '500':
+          $ref: '#/definitions/V2ErrorResponse'
+    post:
+      tags:
+        - Categories
+      summary: Membuat kategori baru
+      security:
+        - JWT: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateCategoryRequest'
+      responses:
+        '201':
+          description: Kategori berhasil dibuat
+          schema:
+            $ref: '#/definitions/V2Response'
+        '400':
+          $ref: '#/definitions/V2ErrorResponse'
+        '500':
+          $ref: '#/definitions/V2ErrorResponse'
+
+  /v2/categories/{category_id}:
+    put:
+      tags:
+        - Categories
+      summary: Memperbarui kategori
+      security:
+        - JWT: []
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          type: string
+          format: uuid
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateCategoryRequest'
+      responses:
+        '200':
+          description: Kategori berhasil diperbarui
+          schema:
+            $ref: '#/definitions/V2Response'
+        '400':
+          $ref: '#/definitions/V2ErrorResponse'
+        '404':
+          $ref: '#/definitions/V2ErrorResponse'
+        '500':
+          $ref: '#/definitions/V2ErrorResponse'
+    delete:
+      tags:
+        - Categories
+      summary: Menghapus kategori
+      security:
+        - JWT: []
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Kategori berhasil dihapus
+          schema:
+            $ref: '#/definitions/V2Response'
+        '404':
+          $ref: '#/definitions/V2ErrorResponse'
+        '500':
+          $ref: '#/definitions/V2ErrorResponse'
+
+definitions:
+  Product:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      description:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+      category_id:
+        type: string
+        format: uuid
+      is_active:
+        type: boolean
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+
+  Category:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      description:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+      updated_at:
+        type: string
+        format: date-time
+
+  CreateProductRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        minLength: 3
+        maxLength: 100
+        description: "Name must be at least 3 characters and less than 100 characters"
+      description:
+        type: string
+        minLength: 10
+        description: "Description must be at least 10 characters"
+      price:
+        type: number
+        minimum: 0
+        exclusiveMinimum: true
+        description: "Price must be positive"
+      category_id:
+        type: string
+        format: uuid
+      stock:
+        type: integer
+        minimum: 0
+        description: "Stock cannot be negative"
+      is_active:
+        type: boolean
+    required:
+      - name
+      - description
+      - price
+      - category_id
+      - stock
+
+  UpdateProductRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        minLength: 3
+        maxLength: 100
+        description: "Name must be at least 3 characters and less than 100 characters"
+      description:
+        type: string
+        minLength: 10
+        description: "Description must be at least 10 characters"
+      price:
+        type: number
+        minimum: 0
+        exclusiveMinimum: true
+        description: "Price must be positive"
+      category_id:
+        type: string
+        format: uuid
+      stock:
+        type: integer
+        minimum: 0
+        description: "Stock cannot be negative"
+      is_active:
+        type: boolean
+    minProperties: 1
+    description: "At least one field must be provided for update"
+
+  CreateCategoryRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        minLength: 3
+        maxLength: 50
+        description: "Name must be at least 3 characters and less than 50 characters"
+      description:
+        type: string
+    required:
+      - name
+
+  UpdateCategoryRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        minLength: 3
+        maxLength: 50
+        description: "Name must be at least 3 characters and less than 50 characters"
+      description:
+        type: string
+    minProperties: 1
+    description: "At least one field must be provided for update"
+
+  V2Response:
+    type: object
+    properties:
+      status:
+        type: string
+        example: "success"
+      data:
+        type: object
+        properties:
+          products:
+            type: array
+            items:
+              $ref: '#/definitions/Product'
+          categories:
+            type: array
+            items:
+              $ref: '#/definitions/Category'
+          product:
+            $ref: '#/definitions/Product'
+          category:
+            $ref: '#/definitions/Category'
+
+  V2ErrorResponse:
+    type: object
+    properties:
+      status:
+        type: string
+        example: "error"
+      message:
+        type: string
+        example: "Product not found"
+      details:
+        type: string
+        description: "Additional error details if available"
+
+responses:
+  UnauthorizedError:
+    description: Token tidak valid atau user tidak memiliki akses
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Invalid token"
+
+  ServerTenantError:
+    description: Server tenant tidak ditemukan
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Server Tenant not found" 

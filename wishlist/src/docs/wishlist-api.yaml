@@ -1,0 +1,252 @@
+swagger: '2.0'
+info:
+  title: Wishlist API
+  version: 1.0.0
+  description: API documentation for the Wishlist microservice
+host: localhost
+basePath: /api/wishlist
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  BearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: 'JWT Token untuk autentikasi (Bearer token)'
+
+
+paths:
+  /wishlist:
+    get:
+      tags:
+        - Wishlist
+      summary: Mendapatkan semua wishlist pengguna
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Daftar wishlist pengguna
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Wishlist'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+    post:
+      tags:
+        - Wishlist
+      summary: Membuat wishlist baru
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/CreateWishlistRequest'
+      responses:
+        '201':
+          description: Wishlist berhasil dibuat
+          schema:
+            $ref: '#/definitions/Wishlist'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  /wishlist/{id}:
+    get:
+      tags:
+        - Wishlist
+      summary: Mendapatkan detail wishlist by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Detail wishlist
+          schema:
+            $ref: '#/definitions/WishlistDetail'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Wishlist tidak ditemukan
+        '500':
+          description: Internal Server Error
+    put:
+      tags:
+        - Wishlist
+      summary: Memperbarui nama wishlist
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateWishlistRequest'
+      responses:
+        '200':
+          description: Wishlist berhasil diupdate
+          schema:
+            $ref: '#/definitions/Wishlist'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+    delete:
+      tags:
+        - Wishlist
+      summary: Menghapus wishlist
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Wishlist berhasil dihapus
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  /wishlist/add:
+    post:
+      tags:
+        - Wishlist Item
+      summary: Menambahkan produk ke wishlist
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/AddProductRequest'
+      responses:
+        '201':
+          description: Produk berhasil ditambahkan
+          schema:
+            $ref: '#/definitions/WishlistDetail'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  /wishlist/remove:
+    delete:
+      tags:
+        - Wishlist Item
+      summary: Menghapus produk dari wishlist
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/RemoveProductRequest'
+      responses:
+        '200':
+          description: Produk berhasil dihapus
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+definitions:
+  Wishlist:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      name:
+        type: string
+      user_id:
+        type: string
+        format: uuid
+      tenant_id:
+        type: string
+      created_at:
+        type: string
+        format: date-time
+
+  WishlistDetail:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      wishlist_id:
+        type: string
+        format: uuid
+      product_id:
+        type: string
+        format: uuid
+      created_at:
+        type: string
+        format: date-time
+
+  CreateWishlistRequest:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        minLength: 3
+        maxLength: 255
+        example: Wishlist Utama
+
+  UpdateWishlistRequest:
+    type: object
+    properties:
+      name:
+        type: string
+        minLength: 3
+        maxLength: 255
+        example: Wishlist Baru
+
+  AddProductRequest:
+    type: object
+    required:
+      - wishlist_id
+      - product_id
+    properties:
+      wishlist_id:
+        type: string
+        format: uuid
+      product_id:
+        type: string
+        format: uuid
+
+  RemoveProductRequest:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+        format: uuid 

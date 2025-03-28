@@ -6,7 +6,7 @@ info:
 host: localhost:8000
 basePath: /api/auth
 schemes:
-  - https
+  - http
 consumes:
   - application/json
 produces:
