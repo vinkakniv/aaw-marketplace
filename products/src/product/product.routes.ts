@@ -1,21 +1,40 @@
-import express from 'express';
-import { validate } from '@src/middleware/validate';
-import * as Validation from './validation';
-import * as Handler from './product.handler';
-import { verifyJWT } from '@src/middleware/verifyJWT';
+import { Router } from 'express';
+import * as HandlerV2 from './product.handler.v2';
+import { validateRequest } from '@src/middleware/validateRequest';
+import {
+    getProductByIdSchemaV2,
+    getManyProductDatasByIdSchemaV2,
+    getProductByCategorySchemaV2,
+    createProductSchemaV2,
+    createCategorySchemaV2,
+    editProductSchemaV2,
+    editCategorySchemaV2,
+    deleteProductSchemaV2,
+    deleteCategorySchemaV2
+} from './validation/v2';
+import { authenticate } from '../middleware/auth';
+import { errorHandler } from '../middleware/errorHandler';
 
-const router = express.Router();
+const router = Router();
 
-router.get('', Handler.getAllProductsHandler);
-router.get('/category', Handler.getAllCategoryHandler);
-router.get('/:id', validate(Validation.getProductByIdSchema), Handler.getProductByIdHandler);
-router.post('/many', validate(Validation.getManyProductDatasByIdSchema), Handler.getManyProductDatasByIdHandler);
-router.get('/category/:category_id', validate(Validation.getProductByCategorySchema), Handler.getProductByCategoryHandler);
-router.post('', verifyJWT, validate(Validation.createProductSchema), Handler.createProductHandler);
-router.post('/category', verifyJWT, validate(Validation.createCategorySchema), Handler.createCategoryHandler);
-router.put('/:id', verifyJWT, validate(Validation.editProductSchema), Handler.editProductHandler);
-router.put('/category/:category_id', verifyJWT, validate(Validation.editCategorySchema), Handler.editCategoryHandler);
-router.delete('/:id', verifyJWT, validate(Validation.deleteProductSchema), Handler.deleteProductHandler);
-router.delete('/category/:category_id', verifyJWT, validate(Validation.deleteCategorySchema), Handler.deleteCategoryHandler);
+// Apply authentication middleware to all routes
+router.use(authenticate);
+
+// V2 Routes with validation
+router.get('/v2/products', HandlerV2.getAllProductsV2Handler);
+router.post('/v2/products/bulk', validateRequest({ body: getManyProductDatasByIdSchemaV2 }), HandlerV2.getManyProductDatasByIdV2Handler);
+router.get('/v2/products/:id', validateRequest({ params: getProductByIdSchemaV2 }), HandlerV2.getProductByIdV2Handler);
+router.get('/v2/products/category/:category_id', validateRequest({ params: getProductByCategorySchemaV2 }), HandlerV2.getProductByCategoryV2Handler);
+router.post('/v2/products', validateRequest({ body: createProductSchemaV2 }), HandlerV2.createProductV2Handler);
+router.put('/v2/products/:id', validateRequest({ params: deleteProductSchemaV2, body: editProductSchemaV2 }), HandlerV2.editProductV2Handler);
+router.delete('/v2/products/:id', validateRequest({ params: deleteProductSchemaV2 }), HandlerV2.deleteProductV2Handler);
+
+router.get('/v2/categories', HandlerV2.getAllCategoryV2Handler);
+router.post('/v2/categories', validateRequest({ body: createCategorySchemaV2 }), HandlerV2.createCategoryV2Handler);
+router.put('/v2/categories/:category_id', validateRequest({ params: deleteCategorySchemaV2, body: editCategorySchemaV2 }), HandlerV2.editCategoryV2Handler);
+router.delete('/v2/categories/:category_id', validateRequest({ params: deleteCategorySchemaV2 }), HandlerV2.deleteCategoryV2Handler);
+
+// Apply error handling middleware
+router.use(errorHandler);
 
 export default router;

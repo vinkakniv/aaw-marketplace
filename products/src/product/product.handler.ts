@@ -66,3 +66,5 @@ export const deleteCategoryHandler = async (req: Request, res: Response) => {
     const response = await Service.deleteCategoryService(category_id);
     return res.status(response.status).send(response.data);
 }
+
+export * from './product.handler.v2';
