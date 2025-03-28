@@ -6,7 +6,7 @@
     "description": "API documentation for the Products microservice"
   },
   "host": "localhost",
-  "basePath": "/api/v2/products",
+  "basePath": "/api/v2",
   "schemes": [
     "http",
     "https"
@@ -26,7 +26,7 @@
     }
   },
   "paths": {
-    "/v2/products": {
+    "/products": {
       "get": {
         "tags": [
           "Products"
@@ -109,7 +109,7 @@
         }
       }
     },
-    "/v2/products/bulk": {
+    "/products/bulk": {
       "post": {
         "tags": [
           "Products"
@@ -160,7 +160,7 @@
         }
       }
     },
-    "/v2/products/{id}": {
+    "/products/{id}": {
       "get": {
         "tags": [
           "Products"
@@ -275,7 +275,7 @@
         }
       }
     },
-    "/v2/products/categories/{category_id}": {
+    "/products/categories/{category_id}": {
       "get": {
         "tags": [
           "Products"
@@ -311,7 +311,7 @@
         }
       }
     },
-    "/v2/categories": {
+    "/categories": {
       "get": {
         "tags": [
           "Categories"
@@ -370,7 +370,7 @@
         }
       }
     },
-    "/v2/categories/{category_id}": {
+    "/categories/{category_id}": {
       "put": {
         "tags": [
           "Categories"

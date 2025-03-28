@@ -21,18 +21,18 @@ const router = Router();
 router.use(verifyJWT);
 
 // V2 Routes with validation
-router.get('/v2/products', HandlerV2.getAllProductsV2Handler);
-router.post('/v2/products/bulk', validateRequest({ body: getManyProductDatasByIdSchemaV2 }), HandlerV2.getManyProductDatasByIdV2Handler);
-router.get('/v2/products/:id', validateRequest({ params: getProductByIdSchemaV2 }), HandlerV2.getProductByIdV2Handler);
-router.get('/v2/products/categories/:category_id', validateRequest({ params: getProductByCategorySchemaV2 }), HandlerV2.getProductByCategoryV2Handler);
-router.post('/v2/products', validateRequest({ body: createProductSchemaV2 }), HandlerV2.createProductV2Handler);
-router.put('/v2/products/:id', validateRequest({ params: deleteProductSchemaV2, body: editProductSchemaV2 }), HandlerV2.editProductV2Handler);
-router.delete('/v2/products/:id', validateRequest({ params: deleteProductSchemaV2 }), HandlerV2.deleteProductV2Handler);
+router.get('/products', HandlerV2.getAllProductsV2Handler);
+router.post('/products/bulk', validateRequest({ body: getManyProductDatasByIdSchemaV2 }), HandlerV2.getManyProductDatasByIdV2Handler);
+router.get('/products/:id', validateRequest({ params: getProductByIdSchemaV2 }), HandlerV2.getProductByIdV2Handler);
+router.get('/products/categories/:category_id', validateRequest({ params: getProductByCategorySchemaV2 }), HandlerV2.getProductByCategoryV2Handler);
+router.post('/products', validateRequest({ body: createProductSchemaV2 }), HandlerV2.createProductV2Handler);
+router.put('/products/:id', validateRequest({ params: deleteProductSchemaV2, body: editProductSchemaV2 }), HandlerV2.editProductV2Handler);
+router.delete('/products/:id', validateRequest({ params: deleteProductSchemaV2 }), HandlerV2.deleteProductV2Handler);
 
-router.get('/v2/categories', HandlerV2.getAllCategoryV2Handler);
-router.post('/v2/categories', validateRequest({ body: createCategorySchemaV2 }), HandlerV2.createCategoryV2Handler);
-router.put('/v2/categories/:category_id', validateRequest({ params: deleteCategorySchemaV2, body: editCategorySchemaV2 }), HandlerV2.editCategoryV2Handler);
-router.delete('/v2/categories/:category_id', validateRequest({ params: deleteCategorySchemaV2 }), HandlerV2.deleteCategoryV2Handler);
+router.get('/categories', HandlerV2.getAllCategoryV2Handler);
+router.post('/categories', validateRequest({ body: createCategorySchemaV2 }), HandlerV2.createCategoryV2Handler);
+router.put('/categories/:category_id', validateRequest({ params: deleteCategorySchemaV2, body: editCategorySchemaV2 }), HandlerV2.editCategoryV2Handler);
+router.delete('/categories/:category_id', validateRequest({ params: deleteCategorySchemaV2 }), HandlerV2.deleteCategoryV2Handler);
 
 // Apply error handling middleware
 router.use(errorHandler);
