@@ -1,0 +1,254 @@
+swagger: '2.0'
+info:
+  title: Authentication Microservice API
+  description: API for user authentication, registration, and token verification
+  version: 1.0.0
+host: localhost:8000
+basePath: /api/auth
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  BearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: 'Use JWT token for authentication (format: Bearer <token>)'
+
+paths:
+  /register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: Creates a new user account with the provided details
+      operationId: registerUser
+      parameters:
+        - in: body
+          name: body
+          description: User registration data
+          required: true
+          schema:
+            $ref: '#/definitions/RegisterRequest'
+      responses:
+        201:
+          description: User successfully registered
+          schema:
+            $ref: '#/definitions/UserResponse'
+        400:
+          description: Invalid input data
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        500:
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticates a user and returns a JWT token
+      operationId: loginUser
+      parameters:
+        - in: body
+          name: body
+          description: User credentials
+          required: true
+          schema:
+            $ref: '#/definitions/LoginRequest'
+      responses:
+        200:
+          description: Successful login
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        401:
+          description: Invalid credentials
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        404:
+          description: User not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        500:
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /verify-token:
+    post:
+      tags:
+        - Authentication
+      summary: Verify user token
+      description: Validates a JWT token and returns user information
+      operationId: verifyToken
+      parameters:
+        - in: body
+          name: body
+          description: Token to verify
+          required: true
+          schema:
+            $ref: '#/definitions/TokenVerificationRequest'
+      responses:
+        200:
+          description: Token is valid
+          schema:
+            $ref: '#/definitions/TokenVerificationResponse'
+        401:
+          description: Invalid or expired token
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        500:
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+  /verify-admin-token:
+    post:
+      tags:
+        - Authentication
+      summary: Verify admin token
+      description: Validates an admin JWT token and returns admin user information
+      operationId: verifyAdminToken
+      parameters:
+        - in: body
+          name: body
+          description: Admin token to verify
+          required: true
+          schema:
+            $ref: '#/definitions/TokenVerificationRequest'
+      responses:
+        200:
+          description: Admin token is valid
+          schema:
+            $ref: '#/definitions/TokenVerificationResponse'
+        401:
+          description: Invalid or expired admin token
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        500:
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+definitions:
+  RegisterRequest:
+    type: object
+    required:
+      - username
+      - email
+      - password
+      - full_name
+      - address
+      - phone_number
+    properties:
+      username:
+        type: string
+        example: johndoe
+        minLength: 3
+        maxLength: 30
+      email:
+        type: string
+        format: email
+        example: john.doe@example.com
+      password:
+        type: string
+        format: password
+        minLength: 8
+        example: securePassword123
+      full_name:
+        type: string
+        example: John Doe
+      address:
+        type: string
+        example: 123 Main St, City, Country
+      phone_number:
+        type: string
+        example: +1234567890
+
+  LoginRequest:
+    type: object
+    required:
+      - username
+      - password
+    properties:
+      username:
+        type: string
+        example: johndoe
+      password:
+        type: string
+        format: password
+        example: securePassword123
+
+  TokenVerificationRequest:
+    type: object
+    required:
+      - token
+    properties:
+      token:
+        type: string
+        description: JWT token to verify
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+  LoginResponse:
+    type: object
+    properties:
+      token:
+        type: string
+        description: JWT token for authentication
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+  UserResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+        example: 550e8400-e29b-41d4-a716-446655440000
+      username:
+        type: string
+        example: johndoe
+      email:
+        type: string
+        format: email
+        example: john.doe@example.com
+      full_name:
+        type: string
+        example: John Doe
+      address:
+        type: string
+        example: 123 Main St, City, Country
+      phone_number:
+        type: string
+        example: +1234567890
+      created_at:
+        type: string
+        format: date-time
+        example: 2023-01-01T00:00:00Z
+
+  TokenVerificationResponse:
+    type: object
+    properties:
+      user:
+        $ref: '#/definitions/UserResponse'
+
+  ErrorResponse:
+    type: object
+    properties:
+      error:
+        type: string
+        description: Error message
+        example: Invalid credentials
+      status:
+        type: integer
+        description: HTTP status code
+        example: 401
+      timestamp:
+        type: string
+        format: date-time
+        description: When the error occurred
+        example: 2023-01-01T00:00:00Z

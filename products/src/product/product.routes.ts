@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as HandlerV2 from './product.handler.v2';
-import { validateRequest } from '@src/middleware/validateRequest';
+import { validateRequest } from '@src/middleware/validate';
 import {
     getProductByIdSchemaV2,
     getManyProductDatasByIdSchemaV2,
