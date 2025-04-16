@@ -36,9 +36,9 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v5
         with:
-          context: authentication/  # Changed to point to the authentication directory
-          file: authentication/Dockerfile  # Explicit path to Dockerfile
-          platforms: linux/amd64,linux/arm64
+          context: authentication/
+          file: authentication/Dockerfile
+          platforms: linux/amd64
           push: ${{ github.event_name == 'push' }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
