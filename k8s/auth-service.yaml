@@ -18,25 +18,29 @@ spec:
         command: ['sh', '-c', 'until pg_isready -h auth-db-service -p 5432; do echo waiting for database; sleep 2; done;']
       containers:
       - name: auth-service
-        image: authentication-microservice:latest
-        imagePullPolicy: IfNotPresent
+        image: vinkakniv/auth-service:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: marketplace-config
+              key: AUTH_DB_HOST
         envFrom:
         - configMapRef:
             name: marketplace-config
         env:
-        - name: DB_HOST
-          value: "auth-db-service"
         - name: DB_PORT
           value: "5432"
         resources:
           requests:
-            memory: "256Mi"
             cpu: "200m"
+            memory: "256Mi"
           limits:
-            memory: "512Mi"
             cpu: "500m"
+            memory: "512Mi"
         readinessProbe:
           httpGet:
             path: /health
