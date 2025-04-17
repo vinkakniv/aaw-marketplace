@@ -12,3 +12,5 @@ CREATE TABLE IF NOT EXISTS "users" (
 	CONSTRAINT "users_tenant_id_username_email_pk" PRIMARY KEY("tenant_id","username","email"),
 	CONSTRAINT "users_id_unique" UNIQUE("id")
 );
+
+

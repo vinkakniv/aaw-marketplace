@@ -6,3 +6,4 @@ data:
   AUTH_MS_URL: "http://auth-service.svc.cluster.local:8000"
   JWT_SECRET: "auth_ms_jwt_secret"
   AUTH_DB_HOST: "postgresql://postgres:postgres@auth-db-service.svc.cluster.local:5432/auth-db"
+  AUTH_DATABASE_URL: "postgresql://postgres:postgres@auth-db-service.svc.cluster.local:5432/auth-db"

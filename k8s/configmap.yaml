@@ -11,7 +11,7 @@ data:
   TENANT_ID: "47dd6b24-0b23-46b0-a662-776158d089ba"
   JWT_SECRET: "auth_ms_jwt_secret"
   # Database URLs
-  AUTH_DB_HOST: "postgresql://postgres:postgres@auth-db-service.svc.cluster.local:5432/auth-db"
+  AUTH_DATABASE_URL: "postgresql://postgres:postgres@auth-db-service.svc.cluster.local:5432/auth-db"
   ORDER_DATABASE_URL: "postgresql://postgres:postgres@order-db-service.svc.cluster.local:5432/order-db"
   PRODUCT_DATABASE_URL: "postgresql://postgres:postgres@product-db-service.svc.cluster.local:5432/product-db"
   TENANT_DATABASE_URL: "postgresql://postgres:postgres@tenant-db-service.svc.cluster.local:5432/tenant-db"
