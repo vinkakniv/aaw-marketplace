@@ -15,7 +15,14 @@ spec:
       initContainers:
       - name: wait-for-db
         image: postgres:latest
-        command: ['sh', '-c', 'until pg_isready -h auth-db-service -p 5432; do echo waiting for database; sleep 2; done;']
+        command:
+          - sh
+          - -c
+          - |
+            until pg_isready -h auth-db-service -p 5432; do
+              echo "waiting for database";
+              sleep 2;
+            done;
       containers:
       - name: auth-service
         image: vinkakniv/auth-service:latest
@@ -23,7 +30,7 @@ spec:
         ports:
         - containerPort: 8000
         env:
-        - name: DB_HOST
+        - name: DATABASE_URL
           valueFrom:
             configMapKeyRef:
               name: marketplace-config
@@ -31,9 +38,6 @@ spec:
         envFrom:
         - configMapRef:
             name: marketplace-config
-        env:
-        - name: DB_PORT
-          value: "5432"
         resources:
           requests:
             cpu: "200m"
@@ -41,22 +45,6 @@ spec:
           limits:
             cpu: "500m"
             memory: "512Mi"
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8000
-          initialDelaySeconds: 20
-          periodSeconds: 20
-          timeoutSeconds: 5
-          failureThreshold: 3
 ---
 apiVersion: v1
 kind: Service
@@ -69,4 +57,4 @@ spec:
     targetPort: 8000
     nodePort: 30000
   selector:
-    app: auth-service 
+    app: auth-service
