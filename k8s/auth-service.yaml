@@ -12,17 +12,8 @@ spec:
       labels:
         app: auth-service
     spec:
-      initContainers:
-      - name: wait-for-db
-        image: postgres:latest
-        command:
-          - sh
-          - -c
-          - |
-            until pg_isready -h auth-db-service -p 5432; do
-              echo "waiting for database";
-              sleep 2;
-            done;
+      nodeSelector:
+        node-role.kubernetes.io/worker: "true"
       containers:
       - name: auth-service
         image: vinkakniv/auth-service:latest

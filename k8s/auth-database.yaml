@@ -24,6 +24,8 @@ spec:
           value: "postgres"
         - name: POSTGRES_PASSWORD
           value: "postgres"
+        - name: POSTGRES_HOST_AUTH_METHOD
+          value: "trust"
         volumeMounts:
         - name: auth-db-storage
           mountPath: /var/lib/postgresql/data
@@ -37,10 +39,11 @@ kind: Service
 metadata:
   name: auth-db-service
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
   - port: 5432
     targetPort: 5432
+    nodePort: 30002
   selector:
     app: auth-db
 ---
@@ -51,6 +54,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: local-path
   resources:
     requests:
       storage: 1Gi
